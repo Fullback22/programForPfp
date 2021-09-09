@@ -1,10 +1,35 @@
 // processingHyperspectrometerImg.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
 #include <iostream>
+#include <fstream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+
 
 int main()
 {
+    std::ifstream inputFile{ "test.csv" };
+    std::string bufer{};
+    for (int j{ 0 };; ++j)
+    {
+        std::getline(inputFile, bufer);
+        //std::istringstream iss{ };
+        std::vector<int> a{};
+        if (j > 1000)
+        {
+            for (size_t i{}; i < bufer.size(); ++i)
+            {
+                if (bufer[i] != ';')
+                {
+                    std::string qwe{ bufer[i] };
+                    std::cout << std::stoi(qwe) << std::endl;
+                    a.push_back(std::stoi(qwe));
+                }
+            }
+            std::cout << "D";
+        }
+    }
     std::cout << "Hello World!\n";
 }
 
