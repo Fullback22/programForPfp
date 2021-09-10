@@ -9,25 +9,39 @@
 
 int main()
 {
+    int const imageSize{ 2044 };
     std::ifstream inputFile{ "test.csv" };
-    std::string bufer{};
-    for (int j{ 0 };; ++j)
+    std::string buferForLine{};
+    cv::Mat outputSpektrum{ cv::Size{imageSize,imageSize }, CV_32FC1, cv::Scalar(1.0) };
+    int const maxTwelveBitNumber{ 4095 };
+    for (int l{ -1 }; !inputFile.eof() ; ++l)
     {
-        std::getline(inputFile, bufer);
-        //std::istringstream iss{ };
-        std::vector<int> a{};
-        if (j > 1000)
+        std::getline(inputFile, buferForLine);
+        if (l > -1)
         {
-            for (size_t i{}; i < bufer.size(); ++i)
+            std::string buferForNumber{};
+            int columNumber{-1};
+            for (int i{0}; i < buferForLine.size(); ++i)
             {
-                if (bufer[i] != ';')
+                if (buferForLine[i] == ';' || buferForLine[i] == '\n')
                 {
-                    std::string qwe{ bufer[i] };
-                    std::cout << std::stoi(qwe) << std::endl;
-                    a.push_back(std::stoi(qwe));
+                    if (columNumber > 0)
+                    {
+                        outputSpektrum.at<float>(l, columNumber) = std::stof(buferForNumber) / maxTwelveBitNumber;
+                    }
+                    ++columNumber;
+                    buferForNumber.clear();
+                }
+                else
+                {
+                    buferForNumber.push_back(buferForLine[i]);
                 }
             }
-            std::cout << "D";
+            if (buferForNumber.size() > 0)
+            {
+                outputSpektrum.at<float>(l, columNumber) = std::stof(buferForNumber) / maxTwelveBitNumber;
+                buferForNumber.clear();
+            }
         }
     }
     std::cout << "Hello World!\n";
